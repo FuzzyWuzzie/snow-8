@@ -15,7 +15,8 @@ class TestCPU extends BuddySuite {
 
 			it('should decode \'call RCA 1802\' (0NNN)');
 			it('should decode \'clear screen\' (00e0)', {
-				cpu.run_instruction.bind(0x00e0).should.not.throwType(String);
+				var e:String = cpu.run_instruction.bind(0x00e0).should.not.throwType(String);
+				trace(e);
 			});
 			it('should decode \'return\' (00ee)');
 			it('should decode \'jump\' (1NNN)');
@@ -35,7 +36,10 @@ class TestCPU extends BuddySuite {
 			it('should decode \'set register to register minus register\' (8XY7)');
 			it('should decode \'shift register left\' (8XYe)');
 			it('should decode \'skip if register doesn\'t equal register\' (9XY0)');
-			it('should decode \'set index register to address\' (aNNN)');
+			it('should decode \'set index register to address\' (aNNN)', {
+				var e:String = cpu.run_instruction.bind(0xa000).should.not.throwType(String);
+				trace(e);
+			});
 			it('should decode \'jump to address plus register\' (bNNN)');
 			it('should decode \'set register to bit and random and address\' (cXNN)');
 			it('should decode \'\' (dXYN)');
