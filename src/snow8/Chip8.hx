@@ -5,10 +5,11 @@ import snow.api.buffers.Uint8Array;
 
 @:log_as('app')
 class Chip8 {
-	private var rom:Uint8Array;
-	private var cpu:CPU;
-	private var ram:Uint8Array;
-	private var stack:Uint8Array;
+	public var rom:Uint8Array;
+	public var cpu:CPU;
+	public var ram:Uint8Array;
+	public var stack:Uint8Array;
+	public var programCounter:Int;
 
 	public function new(romBytes:Uint8Array) {
 		// store the rom
@@ -16,6 +17,7 @@ class Chip8 {
 
 		// initialize the CPU
 		cpu = new CPU();
+		programCounter = 0;
 
 		// set up the memory
 		ram = new Uint8Array(0, null, null, null, 0, 4096);
@@ -26,6 +28,11 @@ class Chip8 {
 	}
 
 	public function run_instruction() {
+		// get the opcode
+		var opcode:Int = rom[programCounter] << 8 | rom[programCounter + 1];
+		programCounter += 2;
 
+		// run the opcode
+		cpu.run_instruction(opcode);
 	}
 }

@@ -19,7 +19,8 @@
 		build: {
 			flags:['-dce full'],
 			dependencies: {
-				snow: '*'
+				snow: '*',
+				buddy: '*'
 			}
 		},
 

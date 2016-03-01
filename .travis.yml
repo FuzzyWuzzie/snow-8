@@ -1,6 +1,10 @@
 # adapted from https://github.com/andyli/HaxeCI/blob/master/.travis.yml
 language: haxe
 
+branches:
+  only:
+    - develop
+
 env:
     matrix:
     - TARGET=interp
