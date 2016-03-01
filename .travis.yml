@@ -3,6 +3,7 @@ language: haxe
 
 branches:
   only:
+    - master
     - develop
 
 env:
