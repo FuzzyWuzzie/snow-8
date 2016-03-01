@@ -23,6 +23,17 @@ class Chip8 {
 		ram = new Uint8Array(0, null, null, null, 0, 4096);
 		stack = new Uint8Array(0, null, null, null, 0, 64);
 
+		// load the fontset into memory
+		// TODO
+
+		// copy the ROM into memory
+		for(i in 0...rom.length) {
+			ram[i + 0x200] = rom[i];
+		}
+		
+		// initialize the program counter
+		programCounter = 0x200;
+
 		// tell the user we started up
 		log('Welcome to snow-8!');
 	}
