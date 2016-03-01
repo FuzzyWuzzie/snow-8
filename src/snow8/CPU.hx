@@ -58,9 +58,9 @@ class CPU {
 			}
 
 			case OpCodes.SE_REG: {
-				var regA:Int = (opcode & 0x0F00) >> 8;
-				var regB:Int = (opcode & 0x00F0) >> 4;
-				if(registers[regA] == registers[regB]) memory.program_counter += 2;
+				var reg_x:Int = (opcode & 0x0F00) >> 8;
+				var reg_y:Int = (opcode & 0x00F0) >> 4;
+				if(registers[reg_x] == registers[reg_y]) memory.program_counter += 2;
 			}
 
 			case OpCodes.LD_BYTE: {
@@ -78,27 +78,62 @@ class CPU {
 			case OpCodes.GRP_MATH: {
 				switch(opcode & 0xF00F) {
 					case OpCodes.LD_REG: {
-						var regA:Int = (opcode & 0x0F00) >> 8;
-						var regB:Int = (opcode & 0x00F0) >> 4;
-						registers[regA] = registers[regB];
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[reg_x] = registers[reg_y];
 					}
 
 					case OpCodes.OR_REG: {
-						var regA:Int = (opcode & 0x0F00) >> 8;
-						var regB:Int = (opcode & 0x00F0) >> 4;
-						registers[regA] = registers[regA] | registers[regB];
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[reg_x] = registers[reg_x] | registers[reg_y];
 					}
 
 					case OpCodes.AND_REG: {
-						var regA:Int = (opcode & 0x0F00) >> 8;
-						var regB:Int = (opcode & 0x00F0) >> 4;
-						registers[regA] = registers[regA] & registers[regB];
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[reg_x] = registers[reg_x] & registers[reg_y];
 					}
 
 					case OpCodes.XOR_REG: {
-						var regA:Int = (opcode & 0x0F00) >> 8;
-						var regB:Int = (opcode & 0x00F0) >> 4;
-						registers[regA] = registers[regA] ^ registers[regB];
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[reg_x] = registers[reg_x] ^ registers[reg_y];
+					}
+
+					case OpCodes.ADD_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[reg_x] += registers[reg_y];
+						registers[0x0f] = if(registers[reg_x] > 255) 1 else 0;
+						registers[reg_x] = registers[reg_x] & 0xff;
+					}
+
+					case OpCodes.SUB_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[0x0f] = if(registers[reg_x] > registers[reg_y]) 1 else 0;
+						registers[reg_x] -= registers[reg_y];
+						registers[reg_x] = registers[reg_x] & 0xff;
+					}
+
+					case OpCodes.SHR_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						registers[0x0f] = registers[reg_x] & 0x01;
+						registers[reg_x] = 0xff & (registers[reg_x] >>> 1);
+					}
+
+					case OpCodes.SUBN_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var reg_y:Int = (opcode & 0x00F0) >> 4;
+						registers[0x0f] = if(registers[reg_y] > registers[reg_x]) 1 else 0;
+						registers[reg_x] = 0xff & (registers[reg_y] - registers[reg_x]);
+					}
+
+					case OpCodes.SHL_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						registers[0x0f] = (registers[reg_x] & 0x80) >> 7;
+						registers[reg_x] = 0xff & (registers[reg_x] << 1);
 					}
 
 					case _: {

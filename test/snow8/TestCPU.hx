@@ -163,11 +163,9 @@ class TestCPU extends BuddySuite {
 			});
 			it('should decode and execute \'8xy6 - SHR Vx {, Vy}\'', {
 				cpu.registers[0] = 0x05;
-				cpu.registers[1] = 0x04;
-				print_exception(cpu.run_instruction.bind(0x8016).should.not.throwType(String));
+				print_exception(cpu.run_instruction.bind(0x8006).should.not.throwType(String));
 				cpu.registers[0].should.be(0x02);
 				cpu.registers[0x0F].should.be(1);
-				cpu.registers[1].should.be(0x02);
 			});
 			it('should decode and execute \'8xy7 - SUBN Vx, Vy\'', {
 				cpu.registers[0] = 42;
