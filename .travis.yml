@@ -27,14 +27,15 @@ install:
 
   # apt packages for each target
   - sudo apt-get update
-  - sh -c "if [ '$TARGET' = 'cpp' ]; then sudo apt-get install gcc-multilib g++-multilib -y; fi"
+  #- sh -c "if [ '$TARGET' = 'cpp' ]; then sudo apt-get install gcc-multilib g++-multilib -y; fi"
+  - sudo apt-get install gcc-multilib g++-multilib -y
 
   # haxelib dependencies for each target
-  - sh -c "if [ '$TARGET' = 'cpp' ]; then haxelib install hxcpp; fi"
+  #- sh -c "if [ '$TARGET' = 'cpp' ]; then haxelib install hxcpp; fi"
+  - haxelib install hxcpp
+
+  - haxelib install snowfall
+  - haxelib run snowfall update snow
 
 script:
   - haxe test.${TARGET}.hxml
-
-branches:
-      only:
-          - master
