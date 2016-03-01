@@ -17,7 +17,7 @@ class CPU {
 
 	public function run_instruction(opcode:Int) {
 		switch(opcode & 0xF000) {
-			case OpCodes.LD: {
+			case OpCodes.LD_BYTE: {
 				var reg:Int = (opcode & 0x0F00) >> 8;
 				var val:Int = opcode & 0x00FF;
 				registers[reg] = val;
