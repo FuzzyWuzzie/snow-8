@@ -94,18 +94,18 @@ class TestCPU extends BuddySuite {
 			});
 			it('should decode and execute \'4xkk - SNE Vx, byte\'', {
 				cpu.registers[0] = 0;
-				print_exception(cpu.run_instruction.bind(0x3000).should.not.throwType(String));
+				print_exception(cpu.run_instruction.bind(0x4000).should.not.throwType(String));
 				mem.program_counter.should.be(0x200);
-				cpu.run_instruction(0x3001);
+				cpu.run_instruction(0x4001);
 				mem.program_counter.should.be(0x202);
 			});
 			it('should decode and execute \'5xy0 - SE Vx, Vy\'', {
 				cpu.registers[0] = 0;
 				cpu.registers[1] = 1;
-				print_exception(cpu.run_instruction.bind(0x4010).should.not.throwType(String));
+				print_exception(cpu.run_instruction.bind(0x5010).should.not.throwType(String));
 				mem.program_counter.should.be(0x200);
 				cpu.registers[1] = 0;
-				cpu.run_instruction(0x4010);
+				cpu.run_instruction(0x5010);
 				mem.program_counter.should.be(0x202);
 			});
 			it('should decode and execute \'6xkk - LD Vx, byte\'', {
