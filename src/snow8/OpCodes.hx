@@ -24,7 +24,7 @@ abstract OpCodes(Int) {
 	var SUBN_REG     = 0x8007;
 	var SHL_REG      = 0x800E;
 	var SNE_REG      = 0x9000;
-	var LD_ADDR      = 0xA000;
+	var LD_I_ADDR    = 0xA000;
 	var JP_ADDR_OFFS = 0xB000;
 	var RND_BYTE     = 0xC000;
 	var DRW_NIBBLE   = 0xD000;

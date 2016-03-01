@@ -202,18 +202,42 @@ class TestCPU extends BuddySuite {
 			it('should decode and execute \'Cxkk - RND Vx, byte\'', {
 				print_exception(cpu.run_instruction.bind(0xC0FF).should.not.throwType(String));
 			});
-			it('should decode and execute \'Dxyn - DRW Vx, Vy, nibble\'');
-			it('should decode and execute \'Ex9E - SKP Vx\'');
-			it('should decode and execute \'ExA1 - SKNP Vx\'');
-			it('should decode and execute \'Fx07 - LD Vx, DT\'');
-			it('should decode and execute \'Fx0A - LD Vx, K\'');
-			it('should decode and execute \'Fx15 - LD DT, Vx\'');
-			it('should decode and execute \'Fx18 - LD ST, Vx\'');
-			it('should decode and execute \'Fx1E - ADD I, Vx\'');
-			it('should decode and execute \'Fx29 - LD F, Vx\'');
-			it('should decode and execute \'Fx33 - LD B, Vx\'');
-			it('should decode and execute \'Fx55 - LD [I], Vx\'');
-			it('should decode and execute \'Fx65 - LD Vx, [I]\'');
+			it('should decode and execute \'Dxyn - DRW Vx, Vy, nibble\'', {
+				print_exception(cpu.run_instruction.bind(0xD000).should.not.throwType(String));
+			});
+			it('should decode and execute \'Ex9E - SKP Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xE09E).should.not.throwType(String));
+			});
+			it('should decode and execute \'ExA1 - SKNP Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xE9A1).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx07 - LD Vx, DT\'', {
+				print_exception(cpu.run_instruction.bind(0xF007).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx0A - LD Vx, K\'', {
+				print_exception(cpu.run_instruction.bind(0xF00A).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx15 - LD DT, Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF015).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx18 - LD ST, Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF018).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx1E - ADD I, Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF01E).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx29 - LD F, Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF029).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx33 - LD B, Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF033).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx55 - LD [I], Vx\'', {
+				print_exception(cpu.run_instruction.bind(0xF055).should.not.throwType(String));
+			});
+			it('should decode and execute \'Fx65 - LD Vx, [I]\'', {
+				print_exception(cpu.run_instruction.bind(0xF065).should.not.throwType(String));
+			});
 
 			after({
 				cpu = null;

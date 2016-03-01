@@ -61,7 +61,7 @@ class Chip8 implements MemoryBus {
 
 	public function run_instruction() {
 		// get the opcode
-		var opcode:Int = rom[program_counter] << 8 | rom[program_counter + 1];
+		var opcode:Int = (rom[program_counter] << 8) | rom[program_counter + 1];
 		program_counter += 2;
 
 		// run the opcode

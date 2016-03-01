@@ -142,6 +142,29 @@ class CPU {
 				}
 			}
 
+			case OpCodes.SNE_REG: {
+				var reg_x:Int = (opcode & 0x0F00) >> 8;
+				var reg_y:Int = (opcode & 0x00F0) >> 4;
+				if(registers[reg_x] != registers[reg_y]) memory.program_counter += 2;
+			}
+
+			case OpCodes.LD_I_ADDR: {
+				var val:Int = opcode & 0x0FFF;
+				index_register = val;
+			}
+
+			case OpCodes.JP_ADDR_OFFS: {
+				var addr:Int = opcode & 0x0FFF;
+				memory.program_counter = addr + registers[0];
+			}
+
+			case OpCodes.RND_BYTE: {
+				var reg_x:Int = (opcode & 0x0F00) >> 8;
+				var byte:Int = opcode & 0xff;
+				var rand:Int = Math.floor((256 * Math.random()));
+				registers[reg_x] = byte & rand;
+			}
+
 			case _: {
 				throw 'Unhandled opcode: 0x${opcode.hex(4)}!';
 			}
