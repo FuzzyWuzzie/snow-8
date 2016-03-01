@@ -2,6 +2,7 @@ package snow8;
 
 @:enum
 abstract OpCodes(Int) {
+	var GRP_SYS      = 0x0000;
 	var SYS_ADDR     = 0x0000;
 	var CLS          = 0x00E0;
 	var RET          = 0x00EE;
@@ -12,6 +13,7 @@ abstract OpCodes(Int) {
 	var SE_REG       = 0x5000;
 	var LD_BYTE      = 0x6000;
 	var ADD_BYTE     = 0x7000;
+	var GRP_MATH     = 0x8000;
 	var LD_REG       = 0x8000;
 	var OR_REG       = 0x8001;
 	var AND_REG      = 0x8002;
@@ -26,8 +28,10 @@ abstract OpCodes(Int) {
 	var JP_ADDR_OFFS = 0xB000;
 	var RND_BYTE     = 0xC000;
 	var DRW_NIBBLE   = 0xD000;
+	var GRP_SKP      = 0xE000;
 	var SKP_REG      = 0xE09E;
 	var SKNP_REG     = 0xE0A1;
+	var GRP_LD       = 0xF000;
 	var LD_REG_DT    = 0xF007;
 	var LD_REG_K     = 0xF00A;
 	var LD_DT_REG    = 0xF015;

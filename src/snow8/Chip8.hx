@@ -2,14 +2,15 @@ package snow8;
 
 import snow.api.Debug.*;
 import snow.api.buffers.Uint8Array;
+import haxe.ds.Vector;
 
 @:log_as('app')
 class Chip8 implements MemoryBus {
 	public var rom:Uint8Array;
 	public var cpu:CPU;
-	public var ram:Uint8Array;
-	public var stack:Uint8Array;
-	public var programCounter:Int;
+
+	public var program_counter(default, default):Int;
+	public var ram:Vector<Int>;
 
 	public function new(romBytes:Uint8Array) {
 		// store the rom
@@ -17,11 +18,10 @@ class Chip8 implements MemoryBus {
 
 		// initialize the CPU
 		cpu = new CPU(this);
-		programCounter = 0;
+		program_counter = 0;
 
 		// set up the memory
-		ram = new Uint8Array(0, null, null, null, 0, 4096);
-		stack = new Uint8Array(0, null, null, null, 0, 64);
+		ram = new Vector<Int>(4096);
 
 		// load the fontset into memory
 		// TODO
@@ -32,7 +32,7 @@ class Chip8 implements MemoryBus {
 		}
 		
 		// initialize the program counter
-		programCounter = 0x200;
+		program_counter = 0x200;
 
 		// tell the user we started up
 		log('Welcome to snow-8!');
@@ -40,8 +40,8 @@ class Chip8 implements MemoryBus {
 
 	public function run_instruction() {
 		// get the opcode
-		var opcode:Int = rom[programCounter] << 8 | rom[programCounter + 1];
-		programCounter += 2;
+		var opcode:Int = rom[program_counter] << 8 | rom[program_counter + 1];
+		program_counter += 2;
 
 		// run the opcode
 		cpu.run_instruction(opcode);
