@@ -4,7 +4,7 @@ import snow.api.Debug.*;
 import snow.api.buffers.Uint8Array;
 
 @:log_as('app')
-class Chip8 {
+class Chip8 implements MemoryBus {
 	public var rom:Uint8Array;
 	public var cpu:CPU;
 	public var ram:Uint8Array;
@@ -16,7 +16,7 @@ class Chip8 {
 		this.rom = romBytes;
 
 		// initialize the CPU
-		cpu = new CPU();
+		cpu = new CPU(this);
 		programCounter = 0;
 
 		// set up the memory
@@ -45,5 +45,13 @@ class Chip8 {
 
 		// run the opcode
 		cpu.run_instruction(opcode);
+	}
+
+	public function write_to_address(address:Int, value:Int):Void {
+		ram[address] = value;
+	}
+
+	public function read_from_address(address:Int):Int {
+		return ram[address];
 	}
 }

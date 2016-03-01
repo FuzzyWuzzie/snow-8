@@ -3,20 +3,47 @@ package snow8;
 import buddy.*;
 using buddy.Should;
 import snow8.CPU;
+import haxe.ds.IntMap;
+import snow8.MemoryBus;
+
+class MemoryMap implements MemoryBus {
+	public var map:IntMap<Int>;
+
+	public function new() {
+		map = new IntMap<Int>();
+	}
+
+	public function write_to_address(address:Int, value:Int):Void {
+		map.set(address, value);
+	}
+
+	public function read_from_address(address:Int):Int {
+		if(!map.exists(address)) return 0;
+		return map.get(address);
+	}
+}
 
 class TestCPU extends BuddySuite {
+	private function print_exception(e:String) {
+		if(e != null) {
+			trace(e);
+			trace(haxe.CallStack.toString(haxe.CallStack.exceptionStack()));
+		}
+	}
+
 	public function new() {
 		describe('Using the CPU', {
+			var mem:MemoryMap;
 			var cpu:CPU;
 
 			before({
-				cpu = new CPU();
+				mem = new MemoryMap();
+				cpu = new CPU(mem);
 			});
 
 			it('should decode \'call RCA 1802\' (0NNN)');
 			it('should decode \'clear screen\' (00e0)', {
-				var e:String = cpu.run_instruction.bind(0x00e0).should.not.throwType(String);
-				trace(e);
+				print_exception(cpu.run_instruction.bind(0x00e0).should.not.throwType(String));
 			});
 			it('should decode \'return\' (00ee)');
 			it('should decode \'jump\' (1NNN)');
@@ -24,7 +51,10 @@ class TestCPU extends BuddySuite {
 			it('should decode \'skip if equals address\' (3XNN)');
 			it('should decode \'skip if not equals address\' (4XNN)');
 			it('should decode \'skip if equals register\' (5XY0)');
-			it('should decode \'set to address\' (6XNN)');
+			it('should decode \'set to address\' (6XNN)', {
+				print_exception(cpu.run_instruction.bind(0x6a02).should.not.throwType(String));
+				cpu.registers[0x0a].should.be(0x02);
+			});
 			it('should decode \'add address to register\' (7XNN)');
 			it('should decode \'set register to register\' (8XY0)');
 			it('should decode \'set register to register OR register\' (8XY1)');
@@ -37,8 +67,7 @@ class TestCPU extends BuddySuite {
 			it('should decode \'shift register left\' (8XYe)');
 			it('should decode \'skip if register doesn\'t equal register\' (9XY0)');
 			it('should decode \'set index register to address\' (aNNN)', {
-				var e:String = cpu.run_instruction.bind(0xa000).should.not.throwType(String);
-				trace(e);
+				print_exception(cpu.run_instruction.bind(0xa000).should.not.throwType(String));
 			});
 			it('should decode \'jump to address plus register\' (bNNN)');
 			it('should decode \'set register to bit and random and address\' (cXNN)');
@@ -57,6 +86,7 @@ class TestCPU extends BuddySuite {
 
 			after({
 				cpu = null;
+				mem = null;
 			});
 		});
 	}
