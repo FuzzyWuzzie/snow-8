@@ -1,7 +1,7 @@
 # snow-8
 A CHIP-8 emulator written in Haxe, built on snow!
 
-[![License](https://img.shields.io/badge/license-Apache2.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-APACHE) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-MIT)
+[![License](https://img.shields.io/badge/license-Apache2.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-APACHE) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-MIT) [![Build Status](https://img.shields.io/travis/FuzzyWuzzie/snow-8.svg?style=flat-square)](https://travis-ci.org/FuzzyWuzzie/snow-8)
 
 ## License
 
