@@ -5,7 +5,7 @@ import snow.api.buffers.Uint8Array;
 import haxe.ds.Vector;
 
 @:log_as('app')
-class Chip8 implements MemoryBus {
+class Chip8 implements MemoryBus implements InputBuffer {
 	public var rom:Uint8Array;
 	public var cpu:CPU;
 
@@ -36,7 +36,7 @@ class Chip8 implements MemoryBus {
 		this.rom = romBytes;
 
 		// initialize the CPU
-		cpu = new CPU(this, null);
+		cpu = new CPU(this, null, this);
 		program_counter = 0;
 
 		// set up the memory

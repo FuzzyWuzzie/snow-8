@@ -8,14 +8,16 @@ using StringTools;
 class CPU {
 	public var memory:MemoryBus;
 	public var display:DisplayBuffer;
+	public var input:InputBuffer;
 
 	public var stack:GenericStack<Int>;
 	public var registers:Vector<Int>;
 	public var index_register:Int;
 
-	public function new(memory:MemoryBus, display:DisplayBuffer) {
+	public function new(memory:MemoryBus, display:DisplayBuffer, input:InputBuffer) {
 		this.memory = memory;
 		this.display = display;
+		this.input = input;
 		this.stack = new GenericStack<Int>();
 		this.registers = new Vector<Int>(16);
 		index_register = 0;
@@ -163,6 +165,24 @@ class CPU {
 				var byte:Int = opcode & 0xff;
 				var rand:Int = Math.floor((256 * Math.random()));
 				registers[reg_x] = byte & rand;
+			}
+
+			case OpCodes.GRP_SKP: {
+				switch(opcode & 0xF0FF) {
+					case OpCodes.SKP_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						if(input.is_key_pressed(registers[reg_x])) memory.program_counter += 2;
+					}
+
+					case OpCodes.SKNP_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						if(!input.is_key_pressed(registers[reg_x])) memory.program_counter += 2;
+					}
+
+					case _: {
+						throw 'Unhandled opcode: 0x${opcode.hex(4)}!';
+					}
+				}
 			}
 
 			case _: {

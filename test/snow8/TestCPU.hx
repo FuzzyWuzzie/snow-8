@@ -4,8 +4,10 @@ import buddy.*;
 using buddy.Should;
 import snow8.CPU;
 import haxe.ds.IntMap;
+import haxe.ds.Vector;
 import snow8.MemoryBus;
 import snow8.DisplayBuffer;
+import snow8.InputBuffer;
 using StringTools;
 
 class MemoryMapFixture implements MemoryBus {
@@ -43,6 +45,18 @@ class DisplayFixture implements DisplayBuffer {
 	}
 }
 
+class InputFixture implements InputBuffer {
+	public var keys:Vector<Bool>;
+
+	public function new() {
+		keys = new Vector<Bool>(16);
+	}
+
+	public function is_key_pressed(key:Int):Bool {
+		return keys[key];
+	}
+}
+
 class TestCPU extends BuddySuite {
 	private function print_exception(e:String) {
 		if(e != null) {
@@ -57,12 +71,14 @@ class TestCPU extends BuddySuite {
 		describe('Using the CPU', {
 			var mem:MemoryMapFixture;
 			var display:DisplayFixture;
+			var input:InputFixture;
 			var cpu:CPU;
 
 			before({
 				mem = new MemoryMapFixture();
 				display = new DisplayFixture();
-				cpu = new CPU(mem, display);
+				input = new InputFixture();
+				cpu = new CPU(mem, display, input);
 			});
 
 			it('should decode and execute \'0nnn - SYS addr\'', {
@@ -206,10 +222,20 @@ class TestCPU extends BuddySuite {
 				print_exception(cpu.run_instruction.bind(0xD000).should.not.throwType(String));
 			});
 			it('should decode and execute \'Ex9E - SKP Vx\'', {
-				print_exception(cpu.run_instruction.bind(0xE09E).should.not.throwType(String));
+				cpu.registers[1] = 1;
+				print_exception(cpu.run_instruction.bind(0xE19E).should.not.throwType(String));
+				mem.program_counter.should.be(0x200);
+				input.keys[1] = true;
+				cpu.run_instruction(0xE19E);
+				mem.program_counter.should.be(0x202);
 			});
 			it('should decode and execute \'ExA1 - SKNP Vx\'', {
-				print_exception(cpu.run_instruction.bind(0xE9A1).should.not.throwType(String));
+				cpu.registers[1] = 1;
+				print_exception(cpu.run_instruction.bind(0xE1A1).should.not.throwType(String));
+				mem.program_counter.should.be(0x202);
+				input.keys[1] = true;
+				cpu.run_instruction(0xE1A1);
+				mem.program_counter.should.be(0x202);
 			});
 			it('should decode and execute \'Fx07 - LD Vx, DT\'', {
 				print_exception(cpu.run_instruction.bind(0xF007).should.not.throwType(String));
@@ -241,6 +267,8 @@ class TestCPU extends BuddySuite {
 
 			after({
 				cpu = null;
+				input = null;
+				input = null;
 				mem = null;
 			});
 		});
