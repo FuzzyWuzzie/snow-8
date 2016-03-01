@@ -1,5 +1,7 @@
-# snow8
+# snow-8
 A CHIP-8 emulator written in Haxe, built on snow!
+
+[![License](https://img.shields.io/badge/license-Apache2.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-APACHE) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/FuzzyWuzzie/snow-8/master/LICENSE-MIT)
 
 ## License
 
