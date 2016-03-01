@@ -47,7 +47,7 @@ class CPU {
 
 			case OpCodes.SE_BYTE: {
 				var reg:Int = (opcode & 0x0F00) >> 8;
-				var byte:Int = (opcode & 0x00FF) >> 4;
+				var byte:Int = opcode & 0x00FF;
 				if(registers[reg] == byte) memory.program_counter += 2;
 			}
 
