@@ -1,0 +1,31 @@
+{
+	snow: {
+		config: {
+			config_path: 'config.json',
+			log: 1
+		}
+	},
+
+	project: {
+		name: 'snow-8',
+		version: '0.1.0',
+		author: 'FuzzyWuzzie',
+
+		app: {
+			name: 'snow-8',
+			package: 'com.blazingmammothgames.snow_8',
+		},
+
+		build: {
+			flags:['-dce full'],
+			dependencies: {
+				snow: '*'
+			}
+		},
+
+		files: {
+			config: 'config.json',
+			assets: 'assets/'
+		}
+	}
+}
