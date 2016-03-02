@@ -197,6 +197,29 @@ class CPU {
 				Log.trace('rnd_byte [${reg_x}] = ${byte} & ${rand}');
 			}
 
+			case OpCodes.DRW_NIBBLE: {
+				// gather information
+				var x:Int = (opcode & 0x0F00) >> 8;
+				var y:Int = (opcode & 0x00F0) >> 4;
+				var n:Int = (opcode & 0x000F);
+
+				// clear the overflow register
+				registers[0x0f] = 0;
+				for(yl in 0...n) {
+					var pixels:Int = memory.read_from_address(index_register + yl);
+					for(xl in 0...8) {
+						if((pixels & (0x80 >> xl)) != 0) {
+							if(display.get_pixel(x + xl, y + yl)) {
+								registers[0x0f] = 0;
+							}
+							display.xor_pixel(x + xl, y + yl);
+						}
+					}
+				}
+
+				Log.trace('drw_nibble @ ${x},${y} (${n})');
+			}
+
 			case OpCodes.GRP_SKP: {
 				switch(opcode & 0xF0FF) {
 					case OpCodes.SKP_REG: {

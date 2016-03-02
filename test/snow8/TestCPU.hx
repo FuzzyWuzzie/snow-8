@@ -9,6 +9,7 @@ import snow8.MemoryBus;
 import snow8.DisplayBuffer;
 import snow8.InputBuffer;
 import snow8.TimerRegisters;
+import snow8.Screen;
 using StringTools;
 
 class MemoryMapFixture implements MemoryBus {
@@ -30,19 +31,12 @@ class MemoryMapFixture implements MemoryBus {
 	}
 }
 
-class DisplayFixture implements DisplayBuffer {
-	public var was_cleared:Bool;
+class DisplayFixture extends Screen {
+	public var was_cleared:Bool = false;
 
-	public function new() {
-		was_cleared = false;
-	}
-
-	public function clear_screen():Void {
+	override public function clear_screen() {
 		was_cleared = true;
-	}
-
-	public function set_pixel(x:Int, y:Int, on:Bool):Void {
-
+		super.clear_screen();
 	}
 }
 
@@ -222,7 +216,12 @@ class TestCPU extends BuddySuite {
 				print_exception(cpu.run_instruction.bind(0xC0FF).should.not.throwType(String));
 			});
 			it('should decode and execute \'Dxyn - DRW Vx, Vy, nibble\'', {
-				//print_exception(cpu.run_instruction.bind(0xD000).should.not.throwType(String));
+				cpu.index_register = 0;
+				mem.write_to_address(0, 0x01);
+				cpu.registers[0] = 0;
+				cpu.registers[1] = 0;
+				print_exception(cpu.run_instruction.bind(0xD001).should.not.throwType(String));
+				display.buffer[0].should.be(0x01);
 			});
 			it('should decode and execute \'Ex9E - SKP Vx\'', {
 				cpu.registers[1] = 1;

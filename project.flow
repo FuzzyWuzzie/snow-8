@@ -22,7 +22,7 @@
 				snow: '*',
 				buddy: '*'
 			},
-			defines: ['log_fatal', 'log_error', 'log_warning', 'log_info', 'assertions'],
+			defines: ['log_fatal', 'log_error', 'log_warning', 'log_info', 'assertions', 'log_trace'],
 		},
 
 		files: {

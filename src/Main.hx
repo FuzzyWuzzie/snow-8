@@ -9,6 +9,8 @@ typedef UserConfig = {
 }
 
 class Main extends snow.App {
+	private var chip8:Chip8 = null;
+
 	function new() {}
 
 	override function config(config:AppConfig): AppConfig {
@@ -24,7 +26,7 @@ class Main extends snow.App {
 			Log.info('loaded ${asset.bytes.length} bytes from ${app.config.user.rom}!');
 
 			// create our virtual machine
-			var chip8:Chip8 = new Chip8(asset.bytes);
+			chip8 = new Chip8(asset.bytes);
 		});
 	}
 
@@ -35,8 +37,16 @@ class Main extends snow.App {
 	} 
 
 	override function tick(delta:Float) {
-		GL.clearColor(1.0, 1.0, 1.0, 1.0);
+		GL.clearColor(0.0, 0.0, 0.0, 1.0);
 		GL.clear(GL.COLOR_BUFFER_BIT);
+
+		if(chip8 != null) {
+			chip8.tick(delta);
+		}
+
+		// TODO: separate rendering + emulation
+		// TODO: rendering
+		// TODO: input
 	}
 
 }
