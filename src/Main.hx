@@ -1,13 +1,13 @@
-import snow.api.Debug.*;
 import snow.types.Types;
 import snow.modules.opengl.GL;
 import snow8.Chip8;
+import debug.Log;
+import debug.Assert;
 
 typedef UserConfig = {
 	var rom:String;
 }
 
-@:log_as('app')
 class Main extends snow.App {
 	function new() {}
 
@@ -17,13 +17,11 @@ class Main extends snow.App {
 	}
 
 	override function ready() {
-		log('ready');
-
 		// start loading a ROM!
-		assert(app.config.user.rom != null);
+		Assert.assert(app.config.user.rom != null);
 		var asset:snow.api.Promise = app.assets.bytes('assets/ROMs/${app.config.user.rom}');
 		asset.then(function(asset:AssetBytes) {
-			log('loaded ${asset.bytes.length} bytes from ${app.config.user.rom}!');
+			Log.info('loaded ${asset.bytes.length} bytes from ${app.config.user.rom}!');
 
 			// create our virtual machine
 			var chip8:Chip8 = new Chip8(asset.bytes);

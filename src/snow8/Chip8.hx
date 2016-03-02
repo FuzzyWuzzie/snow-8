@@ -1,10 +1,9 @@
 package snow8;
 
-import snow.api.Debug.*;
 import snow.api.buffers.Uint8Array;
 import haxe.ds.Vector;
+import debug.Log;
 
-@:log_as('app')
 class Chip8 implements MemoryBus implements InputBuffer {
 	public var rom:Uint8Array;
 	public var cpu:CPU;
@@ -56,7 +55,7 @@ class Chip8 implements MemoryBus implements InputBuffer {
 		program_counter = 0x200;
 
 		// tell the user we started up
-		log('Welcome to snow-8!');
+		Log.info('Welcome to snow-8!');
 	}
 
 	public function run_instruction() {
@@ -74,5 +73,9 @@ class Chip8 implements MemoryBus implements InputBuffer {
 
 	public function read_from_address(address:Int):Int {
 		return ram[address];
+	}
+
+	public function is_key_pressed(key:Int):Bool {
+		return false;
 	}
 }
