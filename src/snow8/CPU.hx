@@ -9,15 +9,17 @@ class CPU {
 	public var memory:MemoryBus;
 	public var display:DisplayBuffer;
 	public var input:InputBuffer;
+	public var timers:TimerRegisters;
 
 	public var stack:GenericStack<Int>;
 	public var registers:Vector<Int>;
 	public var index_register:Int;
 
-	public function new(memory:MemoryBus, display:DisplayBuffer, input:InputBuffer) {
+	public function new(memory:MemoryBus, display:DisplayBuffer, input:InputBuffer, timers:TimerRegisters) {
 		this.memory = memory;
 		this.display = display;
 		this.input = input;
+		this.timers = timers;
 		this.stack = new GenericStack<Int>();
 		this.registers = new Vector<Int>(16);
 		index_register = 0;
