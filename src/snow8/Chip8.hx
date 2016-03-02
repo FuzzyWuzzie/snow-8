@@ -1,16 +1,26 @@
 package snow8;
 
-import snow.api.Debug.*;
 import snow.api.buffers.Uint8Array;
 import haxe.ds.Vector;
+import debug.Log;
 
-@:log_as('app')
 class Chip8 implements MemoryBus implements InputBuffer {
+	public var frequency(default, set):Float;
+	public function set_frequency(f:Float) {
+		period = 1 / f;
+		return frequency = f;
+	}
+	private var period:Float;
+	private var time_accumulator:Float;
+	private var timer:Float;
+
 	public var rom:Uint8Array;
 	public var cpu:CPU;
 
 	public var program_counter(default, default):Int;
 	public var ram:Vector<Int>;
+	public var screen:Screen;
+	public var timers:TimerRegisters;
 
 	private var fontset:Array<Int> = [
 		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -32,11 +42,22 @@ class Chip8 implements MemoryBus implements InputBuffer {
 	];
 
 	public function new(romBytes:Uint8Array) {
+		// set the frequency
+		frequency = 500;
+		time_accumulator = 0;
+		timer = 0;
+
 		// store the rom
 		this.rom = romBytes;
 
+		// initialize the timers
+		timers = new TimerRegisters();
+
+		// initialize the display
+		screen = new Screen();
+
 		// initialize the CPU
-		cpu = new CPU(this, null, this);
+		cpu = new CPU(this, screen, this, timers);
 		program_counter = 0;
 
 		// set up the memory
@@ -56,12 +77,12 @@ class Chip8 implements MemoryBus implements InputBuffer {
 		program_counter = 0x200;
 
 		// tell the user we started up
-		log('Welcome to snow-8!');
+		Log.info('Welcome to snow-8!');
 	}
 
-	public function run_instruction() {
+	private function run_instruction() {
 		// get the opcode
-		var opcode:Int = (rom[program_counter] << 8) | rom[program_counter + 1];
+		var opcode:Int = (ram[program_counter] << 8) | ram[program_counter + 1];
 		program_counter += 2;
 
 		// run the opcode
@@ -74,5 +95,29 @@ class Chip8 implements MemoryBus implements InputBuffer {
 
 	public function read_from_address(address:Int):Int {
 		return ram[address];
+	}
+
+	public function is_key_pressed(key:Int):Bool {
+		return false;
+	}
+
+	public function tick(delta:Float) {
+		// figure out how many cycles to emulate
+		var cycles_to_emulate:Int = Math.floor(delta / period);
+		time_accumulator += delta - (cycles_to_emulate * period);
+		while(time_accumulator >= period) {
+			cycles_to_emulate += 1;
+			time_accumulator -= period;
+		}
+
+		// emulate the cycles
+		for(i in 0...cycles_to_emulate) {
+			run_instruction();
+			timer += period;
+			if(timer >= (1.0/60.0)) {
+				timers.tick();
+				timer -= (1.0/60.0);
+			}
+		}
 	}
 }

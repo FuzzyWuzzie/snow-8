@@ -1,14 +1,16 @@
-import snow.api.Debug.*;
 import snow.types.Types;
 import snow.modules.opengl.GL;
 import snow8.Chip8;
+import debug.Log;
+import debug.Assert;
 
 typedef UserConfig = {
 	var rom:String;
 }
 
-@:log_as('app')
 class Main extends snow.App {
+	private var chip8:Chip8 = null;
+
 	function new() {}
 
 	override function config(config:AppConfig): AppConfig {
@@ -17,16 +19,14 @@ class Main extends snow.App {
 	}
 
 	override function ready() {
-		log('ready');
-
 		// start loading a ROM!
-		assert(app.config.user.rom != null);
+		Assert.assert(app.config.user.rom != null);
 		var asset:snow.api.Promise = app.assets.bytes('assets/ROMs/${app.config.user.rom}');
 		asset.then(function(asset:AssetBytes) {
-			log('loaded ${asset.bytes.length} bytes from ${app.config.user.rom}!');
+			Log.info('loaded ${asset.bytes.length} bytes from ${app.config.user.rom}!');
 
 			// create our virtual machine
-			var chip8:Chip8 = new Chip8(asset.bytes);
+			chip8 = new Chip8(asset.bytes);
 		});
 	}
 
@@ -37,8 +37,16 @@ class Main extends snow.App {
 	} 
 
 	override function tick(delta:Float) {
-		GL.clearColor(1.0, 1.0, 1.0, 1.0);
+		GL.clearColor(0.0, 0.0, 0.0, 1.0);
 		GL.clear(GL.COLOR_BUFFER_BIT);
+
+		if(chip8 != null) {
+			chip8.tick(delta);
+		}
+
+		// TODO: separate rendering + emulation
+		// TODO: rendering
+		// TODO: input
 	}
 
 }
