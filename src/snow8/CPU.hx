@@ -187,6 +187,34 @@ class CPU {
 				}
 			}
 
+			case OpCodes.GRP_LD: {
+				switch(opcode & 0xF0FF) {
+					case OpCodes.LD_REG_DT: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						registers[reg_x] = timers.delay_timer;
+					}
+
+					case OpCodes.LD_DT_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						timers.delay_timer = registers[reg_x];
+					}
+
+					case OpCodes.LD_ST_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						timers.sound_timer = registers[reg_x];
+					}
+
+					case OpCodes.ADD_I_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						index_register += registers[reg_x];
+					}
+
+					case _: {
+						throw 'Unhandled opcode: 0x${opcode.hex(4)}!';
+					}
+				}
+			}
+
 			case _: {
 				throw 'Unhandled opcode: 0x${opcode.hex(4)}!';
 			}

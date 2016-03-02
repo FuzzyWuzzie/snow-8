@@ -264,7 +264,7 @@ class TestCPU extends BuddySuite {
 				cpu.index_register = 27;
 				cpu.registers[0] = 5;
 				print_exception(cpu.run_instruction.bind(0xF01E).should.not.throwType(String));
-				cpu.index_register.should.be(30);
+				cpu.index_register.should.be(32);
 			});
 			it('should decode and execute \'Fx29 - LD F, Vx\'', {
 				//print_exception(cpu.run_instruction.bind(0xF029).should.not.throwType(String));
