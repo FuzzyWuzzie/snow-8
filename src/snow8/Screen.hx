@@ -6,11 +6,16 @@ class Screen implements DisplayBuffer {
 	public var buffer:Vector<Int>;
 
 	public function new() {
-		buffer = new Vector(64 * 32);
+		buffer = new Vector<Int>(64 * 32);
+		for(i in 0...buffer.length) {
+			buffer[i] = 0;
+		}
 	}
 
 	public function clear_screen():Void {
-		buffer = new Vector(64 * 32);
+		for(i in 0...buffer.length) {
+			buffer[i] = 0;
+		}
 	}
 
 	public function get_pixel(x:Int, y:Int):Bool {
@@ -18,6 +23,6 @@ class Screen implements DisplayBuffer {
 	}
 
 	public function xor_pixel(x:Int, y:Int):Void {
-		buffer[(y * 64) + x] = buffer[(y * 64) + x] ^ 1;
+		buffer[(y * 64) + x] = 1;
 	}
 }

@@ -31,14 +31,19 @@ class MemoryMapFixture implements MemoryBus {
 	}
 }
 
-class DisplayFixture extends Screen {
+/*class DisplayFixture extends Screen {
 	public var was_cleared:Bool = false;
+
+	public function new() {
+		super();
+		trace()
+	}
 
 	override public function clear_screen() {
 		was_cleared = true;
 		super.clear_screen();
 	}
-}
+}*/
 
 class InputFixture implements InputBuffer {
 	public var keys:Vector<Bool>;
@@ -65,14 +70,14 @@ class TestCPU extends BuddySuite {
 	public function new() {
 		describe('Using the CPU', {
 			var mem:MemoryMapFixture;
-			var display:DisplayFixture;
+			var display:Screen;
 			var input:InputFixture;
 			var timers:TimerRegisters;
 			var cpu:CPU;
 
 			before({
 				mem = new MemoryMapFixture();
-				display = new DisplayFixture();
+				display = new Screen();
 				input = new InputFixture();
 				timers = new TimerRegisters();
 				cpu = new CPU(mem, display, input, timers);
@@ -83,7 +88,10 @@ class TestCPU extends BuddySuite {
 			});
 			it('should decode and execute \'00E0 - CLS\'', {
 				print_exception(cpu.run_instruction.bind(0x00e0).should.not.throwType(String));
-				display.was_cleared.should.be(true);
+				//display.was_cleared.should.be(true);
+				for(b in display.buffer) {
+					b.should.be(0);
+				}
 			});
 			it('should decode and execute \'00EE - RET\'', {
 				print_exception(cpu.run_instruction.bind(0x00ee).should.not.throwType(String));
@@ -221,7 +229,10 @@ class TestCPU extends BuddySuite {
 				cpu.registers[0] = 0;
 				cpu.registers[1] = 0;
 				print_exception(cpu.run_instruction.bind(0xD001).should.not.throwType(String));
-				display.buffer[0].should.be(0x01);
+				for(i in 0...7) {
+					display.get_pixel(i, 0).should.be(false);
+				}
+				display.get_pixel(7, 0).should.be(true);
 			});
 			it('should decode and execute \'Ex9E - SKP Vx\'', {
 				cpu.registers[1] = 1;
@@ -266,16 +277,36 @@ class TestCPU extends BuddySuite {
 				cpu.index_register.should.be(32);
 			});
 			it('should decode and execute \'Fx29 - LD F, Vx\'', {
-				//print_exception(cpu.run_instruction.bind(0xF029).should.not.throwType(String));
+				print_exception(cpu.run_instruction.bind(0xF129).should.not.throwType(String));
+				cpu.index_register.should.be(0x55);
 			});
 			it('should decode and execute \'Fx33 - LD B, Vx\'', {
-				//print_exception(cpu.run_instruction.bind(0xF033).should.not.throwType(String));
+				cpu.index_register = 10;
+				cpu.registers[1] = 123;
+				print_exception(cpu.run_instruction.bind(0xF133).should.not.throwType(String));
+				mem.read_from_address(10).should.be(1);
+				mem.read_from_address(11).should.be(2);
+				mem.read_from_address(12).should.be(3);
 			});
 			it('should decode and execute \'Fx55 - LD [I], Vx\'', {
-				//print_exception(cpu.run_instruction.bind(0xF055).should.not.throwType(String));
+				cpu.index_register = 10;
+				for(i in 0...0x0f) {
+					cpu.registers[i] = i;
+				}
+				print_exception(cpu.run_instruction.bind(0xFF55).should.not.throwType(String));
+				for(i in 0...0x0f) {
+					mem.read_from_address(i + 10).should.be(i);
+				}
 			});
 			it('should decode and execute \'Fx65 - LD Vx, [I]\'', {
-				//print_exception(cpu.run_instruction.bind(0xF065).should.not.throwType(String));
+				cpu.index_register = 10;
+				for(i in 0...0x0f) {
+					mem.write_to_address(i + 10, i);
+				}
+				print_exception(cpu.run_instruction.bind(0xFF65).should.not.throwType(String));
+				for(i in 0...0x0f) {
+					cpu.registers[i].should.be(i);
+				}
 			});
 
 			after({
