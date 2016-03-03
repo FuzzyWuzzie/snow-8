@@ -256,7 +256,15 @@ class TestCPU extends BuddySuite {
 				cpu.registers[0].should.be(0x42);
 			});
 			it('should decode and execute \'Fx0A - LD Vx, K\'', {
-				//print_exception(cpu.run_instruction.bind(0xF00A).should.not.throwType(String));
+				mem.program_counter.should.be(0x200);
+				mem.program_counter += 2;
+				print_exception(cpu.run_instruction.bind(0xF10A).should.not.throwType(String));
+				mem.program_counter.should.be(0x200);
+				input.keys[3] = true;
+				mem.program_counter += 2;
+				cpu.run_instruction(0xF10A);
+				mem.program_counter.should.be(0x202);
+				cpu.registers[1].should.be(3);
 			});
 			it('should decode and execute \'Fx15 - LD DT, Vx\'', {
 				timers.delay_timer.should.be(0);

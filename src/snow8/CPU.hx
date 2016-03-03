@@ -251,6 +251,19 @@ class CPU {
 						Log.trace('ld_reg_dt [${reg_x}]');
 					}
 
+					case OpCodes.LD_REG_K: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						for(i in 0...16) {
+							if(input.is_key_pressed(i)) {
+								registers[reg_x] = i;
+								memory.program_counter += 2;
+								break;
+							}
+						}
+						memory.program_counter -= 2;
+						Log.trace('ld_reg_k [${reg_x}]');
+					}
+
 					case OpCodes.LD_DT_REG: {
 						var reg_x:Int = (opcode & 0x0F00) >> 8;
 						timers.delay_timer = registers[reg_x];
