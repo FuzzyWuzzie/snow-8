@@ -23,6 +23,9 @@ class CPU {
 		this.timers = timers;
 		this.stack = new GenericStack<Int>();
 		this.registers = new Vector<Int>(16);
+		for(i in 0...16) {
+			registers[i] = 0;
+		}
 		index_register = 0;
 	}
 
@@ -248,6 +251,19 @@ class CPU {
 						Log.trace('ld_reg_dt [${reg_x}]');
 					}
 
+					case OpCodes.LD_REG_K: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						for(i in 0...16) {
+							if(input.is_key_pressed(i)) {
+								registers[reg_x] = i;
+								memory.program_counter += 2;
+								break;
+							}
+						}
+						memory.program_counter -= 2;
+						Log.trace('ld_reg_k [${reg_x}]');
+					}
+
 					case OpCodes.LD_DT_REG: {
 						var reg_x:Int = (opcode & 0x0F00) >> 8;
 						timers.delay_timer = registers[reg_x];
@@ -264,6 +280,40 @@ class CPU {
 						var reg_x:Int = (opcode & 0x0F00) >> 8;
 						index_register += registers[reg_x];
 						Log.trace('add_i_reg [${reg_x}]');
+					}
+
+					case OpCodes.LD_F_REG: {
+						var char:Int = (opcode & 0x0F00) >> 8;
+						index_register = 0x50 + (char * 5);
+						Log.trace('ld_f_reg ${char}');
+					}
+
+					case OpCodes.LD_B_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						var x:Int = registers[reg_x];
+						var hundreds:Int = Math.floor(x / 100);
+						var tens:Int = Math.floor(x / 10) % 10;
+						var ones:Int = (x % 100) % 10;
+						memory.write_to_address(index_register, hundreds);
+						memory.write_to_address(index_register + 1, tens);
+						memory.write_to_address(index_register + 2, ones);
+						Log.trace('ld_b_reg [${reg_x}]');
+					}
+
+					case OpCodes.LD_I_REG: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						for(i in 0...reg_x) {
+							memory.write_to_address(index_register + i, registers[i]);
+						}
+						Log.trace('ld_i_reg [${reg_x}]');
+					}
+
+					case OpCodes.LD_REG_I: {
+						var reg_x:Int = (opcode & 0x0F00) >> 8;
+						for(i in 0...reg_x) {
+							registers[i] = memory.read_from_address(index_register + i);
+						}
+						Log.trace('ld_reg_i [${reg_x}]');
 					}
 
 					case _: {
